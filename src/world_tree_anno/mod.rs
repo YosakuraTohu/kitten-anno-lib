@@ -16,6 +16,7 @@ const KITTEN_TIME: Lazy<u64> = Lazy::new(|| -> u64 {
 
 const COMMON_YEAR_MONTH_COUNT: u8 = 27; // 平年的月数
 const COMMON_MONTH_DAY_COUNT: u8 = 20; // 小月的天数
+const CHORD_DAY_COUNT: u8 = 9; // 琴弦的天数
 const YEAR_CYCLE: u8 = 29; // 闰年周期的年数
 const CYCLE_LEAP_YEAR_COUNT: u8 = 10; // 每周期的闰年数
 const MONTH_CYCLE: u8 = 10; // 大月周期的月数
@@ -29,6 +30,8 @@ const YEAR_CYCLE_FIRSTMONTH_MONTH: Lazy<[u16; YEAR_CYCLE as usize]> =
     Lazy::new(Year::get_year_cycle_firstmonth_month);
 const MONTH_CYCLE_FIRSTDAY_DAY: Lazy<[u8; MONTH_CYCLE as usize]> =
     Lazy::new(Month::get_month_cycle_firstday_day);
+
+const MEANING_OF_CHORD: [&str; 9] = ["折纸", "赤空", "玉兰", "水光", "风荧", "玄冰", "月海", "日珥", "星灯"];
 
 const MEANING_OF_MONTH: &[[&str; 4]] = &[
     ["寂月", "死亡", "祈歌", "烟花"],

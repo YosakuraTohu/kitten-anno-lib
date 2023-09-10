@@ -2,13 +2,9 @@ use chrono::Local;
 #[cfg(target_family = "wasm")]
 use wasm_bindgen::prelude::*;
 
-use super::{
-    ARR_NUMBER_STRING, COMMON_MONTH_DAY_COUNT, COMMON_YEAR_MONTH_COUNT, KITTEN_TIME,
-    MEANING_OF_MONTH, MONTH_CYCLE, MONTH_CYCLE_DAY_COUNT, MONTH_CYCLE_FIRSTDAY_DAY,
-    SECONDS_PER_DAY, YEAR_CYCLE, YEAR_CYCLE_FIRSTMONTH_MONTH, YEAR_CYCLE_MONTH_COUNT,
-};
+use super::*;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct Year(pub u64);
 impl Year {
     pub(crate) fn is_common_year(&self) -> bool {
@@ -29,7 +25,7 @@ impl Year {
     }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct Month(pub u64);
 impl Month {
     pub(crate) fn is_common_month(self) -> bool {
@@ -50,7 +46,7 @@ impl Month {
     }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct Day(pub u64);
 impl Day {
     pub(crate) fn get_month_day(self) -> (Month, u8) {
@@ -92,6 +88,8 @@ impl Day {
         };
         let year_number: u64 = year.0 + 1;
         let [month_str, elemental, imagery, flower] = MEANING_OF_MONTH[month_number as usize];
+        let chord_number: u8 = ((self.0 % CHORD_DAY_COUNT as u64) + 1) as u8;
+        let chord_str: &str = MEANING_OF_CHORD[chord_number as usize - 1];
 
         let bit_num = |number: u64| -> u8 {
             let mut number: u64 = number;
@@ -134,9 +132,11 @@ impl Day {
         Anno {
             year_number,
             month_number,
+            chord_number,
             date,
             year_str: year_str(year_number),
             month_str: month_str.to_string(),
+            chord_str: chord_str.to_string(),
             day_str: day_str(date),
             hour: 0,
             minute: 0,
@@ -153,9 +153,11 @@ impl Day {
 pub struct Anno {
     pub year_number: u64,
     pub month_number: u8,
+    pub chord_number: u8,
     pub date: u8,
     pub year_str: String,
     pub month_str: String,
+    pub chord_str: String,
     pub day_str: String,
     pub hour: u8,
     pub minute: u8,

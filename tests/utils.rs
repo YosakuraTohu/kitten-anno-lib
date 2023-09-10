@@ -12,9 +12,11 @@ fn main() {
 
     assert_eq!(anno_t.year_number, 240849365727);
     assert_eq!(anno_t.month_number, 15);
+    assert_eq!(anno_t.chord_number, 7);
     assert_eq!(anno_t.date, 15);
     assert_eq!(anno_t.year_str, "世界树纪元二四〇八四九三六五七二七年");
     assert_eq!(anno_t.month_str, "苏月");
+    assert_eq!(anno_t.chord_str, "月海");
     assert_eq!(anno_t.day_str, "十五");
     assert_eq!(anno_t.hour, 11);
     assert_eq!(anno_t.minute, 31);
