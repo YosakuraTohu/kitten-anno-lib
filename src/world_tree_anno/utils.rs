@@ -19,7 +19,11 @@ impl Year {
         for i in 1..YEAR_CYCLE {
             year_cycle_firstmonth_month[i as usize] = year_cycle_firstmonth_month[(i - 1) as usize]
                 + COMMON_YEAR_MONTH_COUNT as u16
-                + if Year((i - 1) as u64).is_common_year() { 0 } else { 1 };
+                + if Year((i - 1) as u64).is_common_year() {
+                    0
+                } else {
+                    1
+                };
         }
         *year_cycle_firstmonth_month
     }
@@ -40,7 +44,11 @@ impl Month {
         for i in 1..MONTH_CYCLE {
             month_cycle_firstday_day[i as usize] = month_cycle_firstday_day[(i - 1) as usize]
                 + COMMON_MONTH_DAY_COUNT
-                + if Month((i - 1) as u64).is_common_month() { 0 } else { 1 };
+                + if Month((i - 1) as u64).is_common_month() {
+                    0
+                } else {
+                    1
+                };
         }
         *month_cycle_firstday_day
     }
@@ -60,8 +68,10 @@ impl Day {
             }
             current_cycle_month_count += 1;
         }
-        let month: Month = Month(month_cycle_count * MONTH_CYCLE as u64 + current_cycle_month_count as u64 - 1);
-        let date: u8 = net_day - (*MONTH_CYCLE_FIRSTDAY_DAY)[(current_cycle_month_count - 1) as usize] + 1;
+        let month: Month =
+            Month(month_cycle_count * MONTH_CYCLE as u64 + current_cycle_month_count as u64 - 1);
+        let date: u8 =
+            net_day - (*MONTH_CYCLE_FIRSTDAY_DAY)[(current_cycle_month_count - 1) as usize] + 1;
         (month, date)
     }
 
@@ -78,9 +88,11 @@ impl Day {
                 }
                 current_cycle_year_count += 1;
             }
-            let year: Year = Year(year_cycle_count * YEAR_CYCLE as u64 + current_cycle_year_count as u64 - 1);
-            let mut month_number: u8 =
-                (net_month - (*YEAR_CYCLE_FIRSTMONTH_MONTH)[(current_cycle_year_count - 1) as usize] + 1) as u8;
+            let year: Year =
+                Year(year_cycle_count * YEAR_CYCLE as u64 + current_cycle_year_count as u64 - 1);
+            let mut month_number: u8 = (net_month
+                - (*YEAR_CYCLE_FIRSTMONTH_MONTH)[(current_cycle_year_count - 1) as usize]
+                + 1) as u8;
             if !year.is_common_year() {
                 month_number -= 1;
             }
@@ -168,20 +180,17 @@ pub struct Anno {
 }
 #[cfg_attr(target_family = "wasm", wasm_bindgen)]
 impl Anno {
+    /// 从现实时间获取Anno，从 KITTEN_DAY 2017-04-25 00:00:00
+    /// 开始，时间流速为现实的72倍
     #[cfg_attr(target_family = "wasm", wasm_bindgen)]
     pub fn get_anno() -> Anno {
         let unix = Local::now();
         let wta_unix: u64 = 72 * (unix.timestamp() as u64 - *KITTEN_TIME)
             + (unix.timestamp_micros() % 1000000 * 72 / 1000000) as u64;
-        let day = Day(wta_unix / SECONDS_PER_DAY as u64);
-        let seconds_today: u32 = (wta_unix % SECONDS_PER_DAY as u64) as u32;
-        let mut anno = day.get_day_anno();
-        anno.hour = (seconds_today / 3600) as u8;
-        anno.minute = ((seconds_today % 3600) / 60) as u8;
-        anno.second = ((seconds_today % 3600) % 60) as u8;
-        anno
+        Anno::from_timestamp(wta_unix)
     }
 
+    /// 从时间戳获取Anno，从世界树元年开始
     #[cfg_attr(target_family = "wasm", wasm_bindgen)]
     pub fn from_timestamp(timestamp: u64) -> Anno {
         let day = Day(timestamp / SECONDS_PER_DAY as u64);
@@ -193,11 +202,62 @@ impl Anno {
         anno
     }
 
+    /// 从天数获取Anno，天数从0开始，
+    /// 0对应的是 世界树纪元元年雪月初一 0:00:00
+    #[cfg_attr(target_family = "wasm", wasm_bindgen)]
+    pub fn from_days(days: u64) -> Anno {
+        let day = Day(days);
+        day.get_day_anno()
+    }
+
+    /// 从月数获取Anno，月数从0开始，
+    /// 0对应的是 世界树纪元元年雪月初一 0:00:00
+    #[cfg_attr(target_family = "wasm", wasm_bindgen)]
+    pub fn from_months(months: u64) -> Anno {
+        let month_cycle_count: u64 = (months + 1) / MONTH_CYCLE as u64;
+        let current_cycle_month_count: u8 =
+            (months + 1 - month_cycle_count * MONTH_CYCLE as u64) as u8;
+        let current_cycle_day_count: u8 =
+            (*MONTH_CYCLE_FIRSTDAY_DAY)[current_cycle_month_count as usize - 1];
+        Anno::from_days(
+            current_cycle_day_count as u64 + month_cycle_count * MONTH_CYCLE_DAY_COUNT as u64,
+        )
+    }
+
+    /// 从年数获取Anno，年数从0开始，
+    /// 0对应的是 世界树纪元元年雪月初一 0:00:00
+    #[cfg_attr(target_family = "wasm", wasm_bindgen)]
+    pub fn from_years(years: u64) -> Anno {
+        let year_cycle_count: u64 = (years + 1) / YEAR_CYCLE as u64;
+        let current_cycle_year_count: u8 = (years + 1 - year_cycle_count * YEAR_CYCLE as u64) as u8;
+        let current_cycle_month_count: u16 =
+            (*YEAR_CYCLE_FIRSTMONTH_MONTH)[current_cycle_year_count as usize - 1];
+        Anno::from_months(
+            current_cycle_month_count as u64 + year_cycle_count * MONTH_CYCLE_DAY_COUNT as u64,
+        )
+    }
+
+    /// 将Anno转换为String格式，要注意的是，
+    /// .to_string() 后Anno的所有权将会被转移走，
+    /// 如果之后还要用到Anno，请 .clone() 后再
+    /// .to_string()
     #[cfg_attr(target_family = "wasm", wasm_bindgen)]
     pub fn to_string(self) -> String {
+        let fill_in = |number: u8| -> String {
+            if number < 10 {
+                return format!("0{}", number);
+            }
+            format!("{}", number)
+        };
+
         format!(
             "{}{}{} {}:{}:{}",
-            self.year_str, self.month_str, self.day_str, self.hour, self.minute, self.second
+            self.year_str,
+            self.month_str,
+            self.day_str,
+            self.hour,
+            fill_in(self.minute),
+            fill_in(self.second)
         )
     }
 }
