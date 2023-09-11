@@ -214,29 +214,42 @@ impl Anno {
     /// 0对应的是 世界树纪元元年雪月初一 0:00:00
     #[cfg_attr(target_family = "wasm", wasm_bindgen)]
     pub fn from_months(months: u64) -> Anno {
+        Anno::from_days(Anno::from_months_to_days(months))
+    }
+
+    /// 从月数获取天数，月数从0开始
+    #[cfg_attr(target_family = "wasm", wasm_bindgen)]
+    pub fn from_months_to_days(months: u64) -> u64 {
         let month_cycle_count: u64 = (months + 1) / MONTH_CYCLE as u64;
         let current_cycle_month_count: u8 =
             (months + 1 - month_cycle_count * MONTH_CYCLE as u64) as u8;
         let current_cycle_day_count: u8 =
             (*MONTH_CYCLE_FIRSTDAY_DAY)[current_cycle_month_count as usize - 1];
-        Anno::from_days(
-            current_cycle_day_count as u64 + month_cycle_count * MONTH_CYCLE_DAY_COUNT as u64,
-        )
+        current_cycle_day_count as u64 + month_cycle_count * MONTH_CYCLE_DAY_COUNT as u64
     }
 
     /// 从年数获取Anno，年数从0开始，
     /// 0对应的是 世界树纪元元年雪月初一 0:00:00
     #[cfg_attr(target_family = "wasm", wasm_bindgen)]
     pub fn from_years(years: u64) -> Anno {
+        Anno::from_months(Anno::from_years_to_months(years))
+    }
+
+    /// 从年数获取月数，年数从0开始
+    #[cfg_attr(target_family = "wasm", wasm_bindgen)]
+    pub fn from_years_to_months(years: u64) -> u64 {
         let year_cycle_count: u64 = (years + 1) / YEAR_CYCLE as u64;
         let current_cycle_year_count: u8 = (years + 1 - year_cycle_count * YEAR_CYCLE as u64) as u8;
         let current_cycle_month_count: u16 =
             (*YEAR_CYCLE_FIRSTMONTH_MONTH)[current_cycle_year_count as usize - 1];
-        Anno::from_months(
-            current_cycle_month_count as u64 + year_cycle_count * MONTH_CYCLE_DAY_COUNT as u64,
-        )
+        current_cycle_month_count as u64 + year_cycle_count * MONTH_CYCLE_DAY_COUNT as u64
     }
 
+    /// 从年数获取天数，年数从0开始
+    #[cfg_attr(target_family = "wasm", wasm_bindgen)]
+    pub fn from_years_to_days(years: u64) -> u64 {
+        Anno::from_months_to_days(Anno::from_years_to_months(years))
+    }
     /// 将Anno转换为String格式，要注意的是，
     /// .to_string() 后Anno的所有权将会被转移走，
     /// 如果之后还要用到Anno，请 .clone() 后再
