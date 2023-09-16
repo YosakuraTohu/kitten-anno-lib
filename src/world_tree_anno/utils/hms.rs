@@ -1,6 +1,10 @@
+#[cfg(target_family = "wasm")]
+use wasm_bindgen::prelude::*;
+
 use crate::*;
 
-#[derive(Debug)]
+#[cfg_attr(target_family = "wasm", wasm_bindgen(getter_with_clone))]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Hms {
     pub hour: u8,
     pub minute: u8,
@@ -8,7 +12,7 @@ pub struct Hms {
 }
 
 impl Hms {
-    pub fn from_number(number: u32) -> Self {
+    pub(crate) fn from_number(number: u32) -> Self {
         Self {
             hour: (number / 3600) as u8,
             minute: ((number % 3600) / 60) as u8,

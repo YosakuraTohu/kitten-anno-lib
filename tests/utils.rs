@@ -24,6 +24,8 @@ fn main() {
     assert_eq!(anno_t.month.flower, "虞美人");
     assert_eq!(anno_t.month.elemental, "森林");
     assert_eq!(anno_t.month.imagery, "幽郁");
+    assert_eq!(anno_t.year.is_common, true);
+    assert_eq!(anno_t.month.is_common, true);
 
     assert_eq!(
         anno_t_s,

@@ -1,15 +1,19 @@
 use crate::*;
 
-pub trait FromYearNumber {
+pub(crate) trait FromYearNumber {
     fn from_number(number: u64) -> Self;
 }
 
-pub trait FromNumber {
+pub(crate) trait FromNumber {
     fn from_number(number: u8) -> Self;
 }
 
-pub trait FromRawNumber {
+pub(crate) trait FromRawNumber {
     fn from_raw_number(number: u64) -> (u64, Self);
+}
+
+pub(crate) trait Reverse {
+    fn reverse(number: u64) -> u64;
 }
 
 pub(crate) trait IsCommon {
@@ -17,58 +21,42 @@ pub(crate) trait IsCommon {
 }
 
 pub(crate) fn get_year_cycle_firstmonth_month() -> [u16; YEAR_CYCLE as usize] {
-    let year_cycle_firstmonth_month = &mut [0; YEAR_CYCLE as usize];
+    let mut year_cycle_firstmonth_month = [0; YEAR_CYCLE as usize];
     for i in 1..YEAR_CYCLE {
-        year_cycle_firstmonth_month[i as usize] = year_cycle_firstmonth_month[(i - 1) as usize]
-            + COMMON_YEAR_MONTH_COUNT as u16
-            + if Year::is_common((i - 1) as u64) {
-                0
-            } else {
-                1
-            };
+        let prev_value = year_cycle_firstmonth_month[i as usize - 1];
+        let additional_month = if Year::is_common(i as u64 - 1) { 0 } else { 1 };
+        year_cycle_firstmonth_month[i as usize] =
+            prev_value + COMMON_YEAR_MONTH_COUNT as u16 + additional_month;
     }
-    *year_cycle_firstmonth_month
+    year_cycle_firstmonth_month
 }
 
 pub(crate) fn get_month_cycle_firstday_day() -> [u8; MONTH_CYCLE as usize] {
-    let month_cycle_firstday_day = &mut [0; MONTH_CYCLE as usize];
+    let mut month_cycle_firstday_day = [0; MONTH_CYCLE as usize];
     for i in 1..MONTH_CYCLE {
-        month_cycle_firstday_day[i as usize] = month_cycle_firstday_day[(i - 1) as usize]
-            + COMMON_MONTH_DAY_COUNT
-            + if Month::is_common((i - 1) as u64) {
-                0
-            } else {
-                1
-            };
+        let prev_value = month_cycle_firstday_day[i as usize - 1];
+        let additional_day = if Month::is_common(i as u64 - 1) { 0 } else { 1 };
+        month_cycle_firstday_day[i as usize] = prev_value + COMMON_MONTH_DAY_COUNT + additional_day;
     }
-    *month_cycle_firstday_day
-}
-
-pub(crate) fn bit_num(number: u64) -> u8 {
-    let mut number = number;
-    let mut count = 0;
-    while number > 0 {
-        number = number / 10;
-        count += 1;
-    }
-    count
+    month_cycle_firstday_day
 }
 
 pub(crate) fn to_chinese_number(number: u64) -> String {
     let mut c_number = number;
     let mut result = String::new();
-    for _ in 0..bit_num(number) {
-        result.insert_str(0, ARR_NUMBER_STRING[(c_number % 10) as usize]);
+    while c_number > 0 {
+        let digit = c_number % 10;
+        result.insert_str(0, ARR_NUMBER_STRING[digit as usize]);
         c_number = c_number / 10;
     }
     result
 }
 
 pub(crate) fn year_str(number: u64) -> String {
-    if number == 1 {
-        return "世界树纪元元年".to_string();
+    match number {
+        1 => "世界树纪元元年".to_string(),
+        _ => format!("世界树纪元{}年", to_chinese_number(number)),
     }
-    format!("世界树纪元{}年", to_chinese_number(number))
 }
 
 pub(crate) fn day_str(number: u8) -> String {

@@ -1,13 +1,17 @@
+#[cfg(target_family = "wasm")]
+use wasm_bindgen::prelude::*;
+
 use crate::*;
 
-#[derive(Debug)]
+#[cfg_attr(target_family = "wasm", wasm_bindgen(getter_with_clone))]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Chord {
     pub number: u8,
     pub str: String,
 }
 
 impl Chord {
-    pub fn from_raw_number(number: u64) -> Self {
+    pub(crate) fn from_raw_number(number: u64) -> Self {
         let chord = ((number % CHORD_DAY_COUNT as u64) + 1) as u8;
         Self::from_number(chord)
     }
