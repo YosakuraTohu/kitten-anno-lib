@@ -25,7 +25,7 @@ impl FromYearNumber for Year {
         Self {
             number,
             str: year_str(number),
-            is_common: Self::is_common(number),
+            is_common: Self::is_common(number - 1),
         }
     }
 }

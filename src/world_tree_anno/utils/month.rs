@@ -32,7 +32,7 @@ impl FromNumber for Month {
             flower: flower.to_string(),
             elemental: elemental.to_string(),
             imagery: imagery.to_string(),
-            is_common: Self::is_common(number as u64),
+            is_common: Self::is_common(number as u64 - 1),
         }
     }
 }
