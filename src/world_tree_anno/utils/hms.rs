@@ -3,8 +3,8 @@ use wasm_bindgen::prelude::*;
 
 use crate::*;
 
-#[cfg_attr(target_family = "wasm", wasm_bindgen(getter_with_clone))]
-#[derive(Debug, PartialEq, Eq, Clone)]
+#[cfg_attr(target_family = "wasm", wasm_bindgen)]
+#[derive(Debug, PartialEq, Eq, Copy, Clone)]
 pub struct Hms {
     pub hour: u8,
     pub minute: u8,

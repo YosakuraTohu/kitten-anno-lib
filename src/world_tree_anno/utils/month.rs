@@ -11,7 +11,6 @@ pub struct Month {
     pub flower: String,
     pub elemental: String,
     pub imagery: String,
-    pub is_common: bool,
 }
 
 impl IsCommon for Month {
@@ -32,7 +31,6 @@ impl FromNumber for Month {
             flower: flower.to_string(),
             elemental: elemental.to_string(),
             imagery: imagery.to_string(),
-            is_common: Self::is_common(number as u64 - 1),
         }
     }
 }

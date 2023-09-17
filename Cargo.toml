@@ -24,6 +24,8 @@ chrono = { version = "^0.4.26", default-features = false, features = ["clock"] }
 [target.'cfg(target_family = "wasm")'.dependencies]
 chrono = { version = "^0.4.26", default-features = false, features = ["clock", "wasmbind"] }
 wasm-bindgen = { version = "^0.2.87", default-features = false, features = ["std"] }
+
+[target.'cfg(target_family = "wasm")'.dev-dependencies]
 wasm-bindgen-test = { version = "^0.3.37", default-features = false }
 
 [profile.release]

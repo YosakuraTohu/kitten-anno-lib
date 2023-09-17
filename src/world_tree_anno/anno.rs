@@ -13,6 +13,7 @@ pub struct Anno {
     pub day: Day,
     pub hms: Hms,
     pub chord: Chord,
+    pub is_common: IsCommonSt,
 }
 
 #[cfg_attr(target_family = "wasm", wasm_bindgen)]
@@ -24,6 +25,7 @@ impl Anno {
         let (raw_year, month) = Month::from_raw_number(raw_month);
         let year = Year::from_number(raw_year);
         let chord = Chord::from_raw_number(raw_day);
+        let is_common = IsCommonSt::from_raw_number(raw_year, raw_month);
 
         Self {
             year,
@@ -31,6 +33,7 @@ impl Anno {
             day,
             hms,
             chord,
+            is_common,
         }
     }
 
@@ -58,6 +61,22 @@ impl Anno {
         let raw_month = Year::reverse(raw_year);
 
         Self::from_month(raw_month)
+    }
+
+    #[cfg_attr(target_family = "wasm", wasm_bindgen)]
+    pub fn from_time(
+        raw_year: u64,
+        raw_month: u64,
+        raw_day: u64,
+        raw_hour: u64,
+        raw_minute: u64,
+        raw_second: u64,
+    ) -> Self {
+        let raw_month = Year::reverse(raw_year) + raw_month;
+        let raw_day = Month::reverse(raw_month - 1) + raw_day;
+        let timestamp = Day::reverse(raw_day - 1) + raw_hour * 3600 + raw_minute * 60 + raw_second;
+
+        Self::from_timestamp(timestamp)
     }
 
     #[cfg_attr(target_family = "wasm", wasm_bindgen)]
