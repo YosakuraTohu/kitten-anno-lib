@@ -10,6 +10,7 @@ fn main() {
     let anno_s = anno.to_string();
     let anno_t_s = anno_t.to_string();
 
+    assert_eq!(anno_t.timestamp, 11451419198101919811);
     assert_eq!(anno_t.year.number, 240849365727);
     assert_eq!(anno_t.month.number, 15);
     assert_eq!(anno_t.chord.number, 7);
@@ -27,7 +28,7 @@ fn main() {
 
     assert_eq!(
         anno_t_s,
-        "世界树纪元二四〇八四九三六五七二七年苏月十五 11:31:33"
+        "世界树纪元二四〇八四九三六五七二七年苏月十五\u{3000}11:31:33\u{3000}月海"
     );
 
     println!("{:#?}", anno);

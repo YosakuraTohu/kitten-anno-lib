@@ -8,6 +8,7 @@ use crate::*;
 #[cfg_attr(target_family = "wasm", wasm_bindgen(getter_with_clone))]
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Anno {
+    pub timestamp: u64,
     pub year: Year,
     pub month: Month,
     pub day: Day,
@@ -28,6 +29,7 @@ impl Anno {
         let is_common = IsCommonSt::from_raw_number(raw_year, raw_month);
 
         Self {
+            timestamp: number,
             year,
             month,
             day,
@@ -87,27 +89,35 @@ impl Anno {
         Self::from_timestamp(wta_unix)
     }
 
+    #[cfg(target_family = "wasm")]
     #[cfg_attr(target_family = "wasm", wasm_bindgen)]
     pub fn to_string(&self) -> String {
-        let fill_in = |number: u8| -> String {
-            if number < 10 {
-                return format!("0{}", number);
-            }
-            format!("{}", number)
-        };
         format!(
-            "{}{}{} {}:{}:{}",
-            self.year.str,
-            self.month.str,
-            self.day.str,
-            self.hms.hour,
-            fill_in(self.hms.minute),
-            fill_in(self.hms.second)
+            "{}{}{}\u{3000}{}\u{3000}{}",
+            self.year.str, self.month.str, self.day.str, self.hms.str, self.chord.str,
         )
     }
 
+    #[cfg(target_family = "wasm")]
     #[cfg_attr(target_family = "wasm", wasm_bindgen)]
     pub fn default() -> Self {
+        Self::from_timestamp(0)
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl ToString for Anno {
+    fn to_string(&self) -> String {
+        format!(
+            "{}{}{}\u{3000}{}\u{3000}{}",
+            self.year.str, self.month.str, self.day.str, self.hms.str, self.chord.str,
+        )
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl Default for Anno {
+    fn default() -> Self {
         Self::from_timestamp(0)
     }
 }

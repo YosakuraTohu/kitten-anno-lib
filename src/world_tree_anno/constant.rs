@@ -1,40 +1,44 @@
 use chrono::NaiveDateTime;
-use once_cell::sync::Lazy;
+use lazy_static::lazy_static;
 
 use crate::*;
 
-pub(crate) const SECONDS_PER_DAY: u32 = 85653;
-pub(crate) const KITTEN_DAY: &str = "2017-04-25 00:00:00";
-pub(crate) const KITTEN_TIME: Lazy<u64> = Lazy::new(|| -> u64 {
-    NaiveDateTime::parse_from_str(KITTEN_DAY, "%Y-%m-%d %H:%M:%S")
-        .unwrap()
-        .timestamp() as u64
-});
+pub(crate) static SECONDS_PER_DAY: u32 = 85653;
+pub(crate) static KITTEN_DAY: &str = "2017-04-25 00:00:00";
+lazy_static! {
+    pub(crate) static ref KITTEN_TIME: u64 =
+        NaiveDateTime::parse_from_str(KITTEN_DAY, "%Y-%m-%d %H:%M:%S")
+            .unwrap()
+            .and_utc()
+            .timestamp() as u64;
+}
 
-pub(crate) const COMMON_YEAR_MONTH_COUNT: u8 = 27; // 平年的月数
-pub(crate) const COMMON_MONTH_DAY_COUNT: u8 = 20; // 小月的天数
-pub(crate) const CHORD_DAY_COUNT: u8 = 9; // 琴弦的天数
+pub(crate) static COMMON_YEAR_MONTH_COUNT: u8 = 27; // 平年的月数
+pub(crate) static COMMON_MONTH_DAY_COUNT: u8 = 20; // 小月的天数
+pub(crate) static CHORD_DAY_COUNT: u8 = 9; // 琴弦的天数
 pub(crate) const YEAR_CYCLE: u8 = 29; // 闰年周期的年数
-pub(crate) const CYCLE_LEAP_YEAR_COUNT: u8 = 10; // 每周期的闰年数
+pub(crate) static CYCLE_LEAP_YEAR_COUNT: u8 = 10; // 每周期的闰年数
 pub(crate) const MONTH_CYCLE: u8 = 10; // 大月周期的月数
-pub(crate) const CYCLE_GREATER_MONTH_COUNT: u8 = 3; // 每周期的大月数
-pub(crate) const YEAR_CYCLE_MONTH_COUNT: u16 =
+pub(crate) static CYCLE_GREATER_MONTH_COUNT: u8 = 3; // 每周期的大月数
+pub(crate) static YEAR_CYCLE_MONTH_COUNT: u16 =
     YEAR_CYCLE as u16 * COMMON_YEAR_MONTH_COUNT as u16 + CYCLE_LEAP_YEAR_COUNT as u16; // 闰年周期的月数
-pub(crate) const MONTH_CYCLE_DAY_COUNT: u8 =
+pub(crate) static MONTH_CYCLE_DAY_COUNT: u8 =
     MONTH_CYCLE * COMMON_MONTH_DAY_COUNT + CYCLE_GREATER_MONTH_COUNT; // 闰年周期的月数
-pub(crate) const ARR_NUMBER_STRING: [&str; 10] =
+pub(crate) static ARR_NUMBER_STRING: [&str; 10] =
     ["〇", "一", "二", "三", "四", "五", "六", "七", "八", "九"]; // 数字对应的字符
 
-pub(crate) const YEAR_CYCLE_FIRSTMONTH_MONTH: Lazy<[u16; YEAR_CYCLE as usize]> =
-    Lazy::new(get_year_cycle_firstmonth_month);
-pub(crate) const MONTH_CYCLE_FIRSTDAY_DAY: Lazy<[u8; MONTH_CYCLE as usize]> =
-    Lazy::new(get_month_cycle_firstday_day);
+lazy_static! {
+    pub(crate) static ref YEAR_CYCLE_FIRSTMONTH_MONTH: [u16; YEAR_CYCLE as usize] =
+        get_year_cycle_firstmonth_month();
+    pub(crate) static ref MONTH_CYCLE_FIRSTDAY_DAY: [u8; MONTH_CYCLE as usize] =
+        get_month_cycle_firstday_day();
+}
 
-pub(crate) const MEANING_OF_CHORD: [&str; 9] = [
+pub(crate) static MEANING_OF_CHORD: [&str; 9] = [
     "折纸", "赤空", "玉兰", "水光", "风荧", "玄冰", "月海", "日珥", "星灯",
 ];
 
-pub(crate) const MEANING_OF_MONTH: &[[&str; 4]] = &[
+pub(crate) static MEANING_OF_MONTH: &[[&str; 4]] = &[
     ["寂月", "死亡", "祈歌", "烟花"],
     ["雪月", "风雪", "飘荡", "山茶"],
     ["海月", "海洋", "深沉", "金花茶"],

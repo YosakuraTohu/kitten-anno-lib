@@ -1,6 +1,6 @@
 [package]
 name = "kitten-anno-lib"
-version = "0.3.5"
+version = "0.3.7"
 edition = "2021"
 rust-version = "1.70"
 license = "MIT OR Apache-2.0"
@@ -16,7 +16,7 @@ readme = "README.md"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-once_cell = { version = "^1.18.0", default-features = false, features = ["std"] }
+lazy_static = "^1.4.0"
 
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
 chrono = { version = "^0.4.26", default-features = false, features = ["clock"] }

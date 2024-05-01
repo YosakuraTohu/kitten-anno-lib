@@ -15,10 +15,7 @@ pub struct Month {
 
 impl IsCommon for Month {
     fn is_common(number: u64) -> bool {
-        match (number % MONTH_CYCLE as u64) as u8 {
-            1 | 4 | 8 => false,
-            _ => true,
-        }
+        !matches!((number % MONTH_CYCLE as u64) as u8, 1 | 4 | 8)
     }
 }
 

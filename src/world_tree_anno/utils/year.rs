@@ -8,15 +8,14 @@ use crate::*;
 pub struct Year {
     pub number: u64,
     pub str: String,
-    pub is_common: bool,
 }
 
 impl IsCommon for Year {
     fn is_common(number: u64) -> bool {
-        match (number % YEAR_CYCLE as u64) as u8 {
-            1 | 4 | 7 | 10 | 13 | 15 | 18 | 21 | 24 | 27 => false,
-            _ => true,
-        }
+        !matches!(
+            (number % YEAR_CYCLE as u64) as u8,
+            1 | 4 | 7 | 10 | 13 | 15 | 18 | 21 | 24 | 27
+        )
     }
 }
 
@@ -25,7 +24,6 @@ impl FromYearNumber for Year {
         Self {
             number,
             str: year_str(number),
-            is_common: Self::is_common(number - 1),
         }
     }
 }

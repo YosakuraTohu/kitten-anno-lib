@@ -47,7 +47,7 @@ pub(crate) fn to_chinese_number(number: u64) -> String {
     while c_number > 0 {
         let digit = c_number % 10;
         result.insert_str(0, ARR_NUMBER_STRING[digit as usize]);
-        c_number = c_number / 10;
+        c_number /= 10;
     }
     result
 }
@@ -68,4 +68,14 @@ pub(crate) fn day_str(number: u8) -> String {
         (2, false) => format!("廿{}", to_chinese_number((number % 10) as u64)),
         _ => "".to_string(),
     }
+}
+
+pub(crate) fn hms_str(hour: u8, minute: u8, second: u8) -> String {
+    let fill_in = |number: u8| -> String {
+        if number < 10 {
+            return format!("0{}", number);
+        }
+        format!("{}", number)
+    };
+    format!("{}:{}:{}", hour, fill_in(minute), fill_in(second))
 }
