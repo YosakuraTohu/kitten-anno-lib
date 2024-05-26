@@ -11,6 +11,7 @@ pub struct Year {
 }
 
 impl IsCommon for Year {
+    #[inline(always)]
     fn is_common(number: u64) -> bool {
         !matches!(
             (number % YEAR_CYCLE as u64) as u8,
@@ -20,6 +21,7 @@ impl IsCommon for Year {
 }
 
 impl FromYearNumber for Year {
+    #[inline(always)]
     fn from_number(number: u64) -> Self {
         Self {
             number,
@@ -29,6 +31,7 @@ impl FromYearNumber for Year {
 }
 
 impl Reverse for Year {
+    #[inline(always)]
     fn reverse(number: u64) -> u64 {
         let number = number - 1;
         let year_cycle_count = number / YEAR_CYCLE as u64;

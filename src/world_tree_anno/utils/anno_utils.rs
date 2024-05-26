@@ -41,9 +41,10 @@ pub(crate) fn get_month_cycle_firstday_day() -> [u8; MONTH_CYCLE as usize] {
     month_cycle_firstday_day
 }
 
-pub(crate) fn to_chinese_number(number: u64) -> String {
+#[inline(always)]
+pub(crate) fn to_chinese_number(number: u64, capacity: usize) -> String {
     let mut c_number = number;
-    let mut result = String::new();
+    let mut result = String::with_capacity(capacity);
     while c_number > 0 {
         let digit = c_number % 10;
         result.insert_str(0, ARR_NUMBER_STRING[digit as usize]);
@@ -52,30 +53,60 @@ pub(crate) fn to_chinese_number(number: u64) -> String {
     result
 }
 
+#[inline(always)]
 pub(crate) fn year_str(number: u64) -> String {
+    let capacity = (number.ilog10() as usize + 1) * 3;
+    let mut result = String::with_capacity(6 * 3 + capacity);
     match number {
-        1 => "世界树纪元元年".to_string(),
-        _ => format!("世界树纪元{}年", to_chinese_number(number)),
-    }
-}
-
-pub(crate) fn day_str(number: u8) -> String {
-    match (number / 10, number % 10 == 0) {
-        (0, false) => format!("初{}", to_chinese_number((number % 10) as u64)),
-        (1, true) => "初十".to_string(),
-        (1, false) => format!("十{}", to_chinese_number((number % 10) as u64)),
-        (2, true) => "二十".to_string(),
-        (2, false) => format!("廿{}", to_chinese_number((number % 10) as u64)),
-        _ => "".to_string(),
-    }
-}
-
-pub(crate) fn hms_str(hour: u8, minute: u8, second: u8) -> String {
-    let fill_in = |number: u8| -> String {
-        if number < 10 {
-            return format!("0{}", number);
+        1 => result.push_str("世界树纪元元年"),
+        _ => {
+            result.push_str("世界树纪元");
+            result.push_str(&to_chinese_number(number, capacity));
+            result.push('年');
         }
-        format!("{}", number)
     };
-    format!("{}:{}:{}", hour, fill_in(minute), fill_in(second))
+    result
+}
+
+#[inline(always)]
+pub(crate) fn day_str(number: u8) -> String {
+    let mut result = String::with_capacity(2 * 3);
+    match (number / 10, number % 10 == 0) {
+        (0, false) => {
+            result.push('初');
+            result.push_str(&to_chinese_number((number % 10) as u64, 3));
+        }
+        (1, true) => result.push_str("初十"),
+        (1, false) => {
+            result.push('十');
+            result.push_str(&to_chinese_number((number % 10) as u64, 3));
+        }
+        (2, true) => result.push_str("二十"),
+        (2, false) => {
+            result.push('廿');
+            result.push_str(&to_chinese_number((number % 10) as u64, 3));
+        }
+        _ => (),
+    };
+    result
+}
+
+#[inline(always)]
+pub(crate) fn hms_str(hour: u8, minute: u8, second: u8) -> String {
+    let mut result = [0u8; 8];
+    let mut offset = 0;
+
+    if hour >= 10 {
+        result[0] = 0x30 + hour / 10;
+        offset += 1;
+    }
+    result[0 + offset] = 0x30 + hour % 10;
+    result[1 + offset] = b':';
+    result[2 + offset] = 0x30 + minute / 10;
+    result[3 + offset] = 0x30 + minute % 10;
+    result[4 + offset] = b':';
+    result[5 + offset] = 0x30 + second / 10;
+    result[6 + offset] = 0x30 + second % 10;
+
+    unsafe { String::from_utf8_unchecked(result.as_slice().to_vec()) }
 }

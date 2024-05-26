@@ -11,6 +11,7 @@ pub struct IsCommonSt {
 }
 
 impl IsCommonSt {
+    #[inline(always)]
     pub(crate) fn from_raw_number(raw_year: u64, raw_month: u64) -> Self {
         let year = Year::is_common(raw_year - 1);
         let month = Month::is_common(raw_month);

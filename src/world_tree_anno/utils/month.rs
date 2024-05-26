@@ -14,12 +14,14 @@ pub struct Month {
 }
 
 impl IsCommon for Month {
+    #[inline(always)]
     fn is_common(number: u64) -> bool {
         !matches!((number % MONTH_CYCLE as u64) as u8, 1 | 4 | 8)
     }
 }
 
 impl FromNumber for Month {
+    #[inline(always)]
     fn from_number(number: u8) -> Self {
         let [month_str, elemental, imagery, flower] = MEANING_OF_MONTH[number as usize];
         Self {
@@ -33,6 +35,7 @@ impl FromNumber for Month {
 }
 
 impl FromRawNumber for Month {
+    #[inline(always)]
     fn from_raw_number(number: u64) -> (u64, Self) {
         let year_cycle_count = number / YEAR_CYCLE_MONTH_COUNT as u64;
         let net_month = (number % YEAR_CYCLE_MONTH_COUNT as u64) as u16;
@@ -59,6 +62,7 @@ impl FromRawNumber for Month {
 }
 
 impl Reverse for Month {
+    #[inline(always)]
     fn reverse(number: u64) -> u64 {
         let number = number - 1;
         let month_cycle_count = number / MONTH_CYCLE as u64;
@@ -69,6 +73,7 @@ impl Reverse for Month {
 }
 
 impl Default for Month {
+    #[inline(always)]
     fn default() -> Self {
         Self::from_number(0)
     }

@@ -10,6 +10,7 @@ pub struct Day {
 }
 
 impl FromNumber for Day {
+    #[inline(always)]
     fn from_number(number: u8) -> Self {
         Self {
             number,
@@ -19,6 +20,7 @@ impl FromNumber for Day {
 }
 
 impl FromRawNumber for Day {
+    #[inline(always)]
     fn from_raw_number(number: u64) -> (u64, Self) {
         let month_cycle_count = number / MONTH_CYCLE_DAY_COUNT as u64;
         let net_day = (number % MONTH_CYCLE_DAY_COUNT as u64) as u8;
@@ -39,6 +41,7 @@ impl FromRawNumber for Day {
 }
 
 impl Reverse for Day {
+    #[inline(always)]
     fn reverse(number: u64) -> u64 {
         let number = number - 1;
 
@@ -47,6 +50,7 @@ impl Reverse for Day {
 }
 
 impl Default for Day {
+    #[inline(always)]
     fn default() -> Self {
         Self::from_number(1)
     }

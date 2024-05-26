@@ -11,6 +11,7 @@ pub struct Chord {
 }
 
 impl Chord {
+    #[inline(always)]
     pub(crate) fn from_raw_number(number: u64) -> Self {
         let chord = ((number % CHORD_DAY_COUNT as u64) + 1) as u8;
         Self::from_number(chord)
@@ -18,6 +19,7 @@ impl Chord {
 }
 
 impl FromNumber for Chord {
+    #[inline(always)]
     fn from_number(number: u8) -> Self {
         Self {
             number,
@@ -27,6 +29,7 @@ impl FromNumber for Chord {
 }
 
 impl Default for Chord {
+    #[inline(always)]
     fn default() -> Self {
         Self::from_number(1)
     }

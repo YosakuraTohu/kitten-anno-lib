@@ -13,6 +13,7 @@ pub struct Hms {
 }
 
 impl Hms {
+    #[inline(always)]
     pub(crate) fn from_number(number: u32) -> Self {
         let hour = (number / 3600) as u8;
         let minute = ((number % 3600) / 60) as u8;
@@ -27,6 +28,7 @@ impl Hms {
 }
 
 impl FromRawNumber for Hms {
+    #[inline(always)]
     fn from_raw_number(number: u64) -> (u64, Self) {
         (
             number / SECONDS_PER_DAY as u64,
@@ -36,6 +38,7 @@ impl FromRawNumber for Hms {
 }
 
 impl Default for Hms {
+    #[inline(always)]
     fn default() -> Self {
         Self::from_number(0)
     }

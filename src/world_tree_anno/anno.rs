@@ -20,6 +20,7 @@ pub struct Anno {
 #[cfg_attr(target_family = "wasm", wasm_bindgen)]
 impl Anno {
     #[cfg_attr(target_family = "wasm", wasm_bindgen)]
+    #[inline]
     pub fn from_number(number: u64) -> Self {
         let (raw_day, hms) = Hms::from_raw_number(number);
         let (raw_month, day) = Day::from_raw_number(raw_day);
@@ -40,11 +41,13 @@ impl Anno {
     }
 
     #[cfg_attr(target_family = "wasm", wasm_bindgen)]
+    #[inline]
     pub fn from_timestamp(timestamp: u64) -> Self {
         Self::from_number(timestamp)
     }
 
     #[cfg_attr(target_family = "wasm", wasm_bindgen)]
+    #[inline(always)]
     pub fn from_day(raw_day: u64) -> Self {
         let timestamp = Day::reverse(raw_day);
 
@@ -52,6 +55,7 @@ impl Anno {
     }
 
     #[cfg_attr(target_family = "wasm", wasm_bindgen)]
+    #[inline(always)]
     pub fn from_month(raw_month: u64) -> Self {
         let raw_day = Month::reverse(raw_month);
 
@@ -59,6 +63,7 @@ impl Anno {
     }
 
     #[cfg_attr(target_family = "wasm", wasm_bindgen)]
+    #[inline(always)]
     pub fn from_year(raw_year: u64) -> Self {
         let raw_month = Year::reverse(raw_year);
 
@@ -66,6 +71,7 @@ impl Anno {
     }
 
     #[cfg_attr(target_family = "wasm", wasm_bindgen)]
+    #[inline]
     pub fn from_time(
         raw_year: u64,
         raw_month: u64,
@@ -82,6 +88,7 @@ impl Anno {
     }
 
     #[cfg_attr(target_family = "wasm", wasm_bindgen)]
+    #[inline(always)]
     pub fn get_anno() -> Self {
         let unix = Local::now();
         let wta_unix: u64 = 72 * (unix.timestamp() as u64 - *KITTEN_TIME)
