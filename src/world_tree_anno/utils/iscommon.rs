@@ -1,9 +1,9 @@
-#[cfg(target_family = "wasm")]
+#[cfg(feature = "wasmbind")]
 use wasm_bindgen::prelude::*;
 
 use crate::*;
 
-#[cfg_attr(target_family = "wasm", wasm_bindgen)]
+#[cfg_attr(feature = "wasmbind", wasm_bindgen)]
 #[derive(Debug, PartialEq, Eq, Copy, Clone)]
 pub struct IsCommonSt {
     pub year: bool,

@@ -1,15 +1,19 @@
-#[cfg(target_family = "wasm")]
+#[cfg(feature = "wasmbind")]
 use wasm_bindgen::prelude::*;
 
 use crate::*;
 
-#[cfg_attr(target_family = "wasm", wasm_bindgen(getter_with_clone))]
+#[cfg_attr(feature = "wasmbind", wasm_bindgen(getter_with_clone))]
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Month {
     pub number: u8,
+    #[cfg(feature = "std")]
     pub str: String,
+    #[cfg(feature = "std")]
     pub flower: String,
+    #[cfg(feature = "std")]
     pub elemental: String,
+    #[cfg(feature = "std")]
     pub imagery: String,
 }
 
@@ -23,12 +27,17 @@ impl IsCommon for Month {
 impl FromNumber for Month {
     #[inline(always)]
     fn from_number(number: u8) -> Self {
+        #[cfg(feature = "std")]
         let [month_str, elemental, imagery, flower] = MEANING_OF_MONTH[number as usize];
         Self {
             number,
+            #[cfg(feature = "std")]
             str: month_str.to_string(),
+            #[cfg(feature = "std")]
             flower: flower.to_string(),
+            #[cfg(feature = "std")]
             elemental: elemental.to_string(),
+            #[cfg(feature = "std")]
             imagery: imagery.to_string(),
         }
     }

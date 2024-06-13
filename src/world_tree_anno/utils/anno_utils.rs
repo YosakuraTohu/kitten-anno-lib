@@ -42,6 +42,7 @@ pub(crate) fn get_month_cycle_firstday_day() -> [u8; MONTH_CYCLE as usize] {
 }
 
 #[inline(always)]
+#[cfg(feature = "std")]
 pub(crate) fn to_chinese_number(number: u64, capacity: usize) -> String {
     let mut c_number = number;
     let mut result = String::with_capacity(capacity);
@@ -54,6 +55,7 @@ pub(crate) fn to_chinese_number(number: u64, capacity: usize) -> String {
 }
 
 #[inline(always)]
+#[cfg(feature = "std")]
 pub(crate) fn year_str(number: u64) -> String {
     let capacity = (number.ilog10() as usize + 1) * 3;
     let mut result = String::with_capacity(6 * 3 + capacity);
@@ -69,6 +71,7 @@ pub(crate) fn year_str(number: u64) -> String {
 }
 
 #[inline(always)]
+#[cfg(feature = "std")]
 pub(crate) fn day_str(number: u8) -> String {
     let mut result = String::with_capacity(2 * 3);
     match (number / 10, number % 10 == 0) {
@@ -92,6 +95,7 @@ pub(crate) fn day_str(number: u8) -> String {
 }
 
 #[inline(always)]
+#[cfg(feature = "std")]
 pub(crate) fn hms_str(hour: u8, minute: u8, second: u8) -> String {
     let mut result = [0u8; 8];
     let mut offset = 0;
@@ -100,7 +104,7 @@ pub(crate) fn hms_str(hour: u8, minute: u8, second: u8) -> String {
         result[0] = 0x30 + hour / 10;
         offset += 1;
     }
-    result[0 + offset] = 0x30 + hour % 10;
+    result[offset] = 0x30 + hour % 10;
     result[1 + offset] = b':';
     result[2 + offset] = 0x30 + minute / 10;
     result[3 + offset] = 0x30 + minute % 10;
@@ -108,5 +112,5 @@ pub(crate) fn hms_str(hour: u8, minute: u8, second: u8) -> String {
     result[5 + offset] = 0x30 + second / 10;
     result[6 + offset] = 0x30 + second % 10;
 
-    unsafe { String::from_utf8_unchecked(result.as_slice().to_vec()) }
+    String::from_utf8_lossy(&result).to_string()
 }

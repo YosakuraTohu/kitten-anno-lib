@@ -4,10 +4,10 @@ use lazy_static::lazy_static;
 use crate::*;
 
 pub(crate) static SECONDS_PER_DAY: u32 = 85653;
-pub(crate) static KITTEN_DAY: &str = "2017-04-25 00:00:00";
+pub(crate) static KITTEN_DAY: &str = "2017-04-25T00:00:00";
 lazy_static! {
     pub(crate) static ref KITTEN_TIME: u64 =
-        NaiveDateTime::parse_from_str(KITTEN_DAY, "%Y-%m-%d %H:%M:%S")
+        NaiveDateTime::parse_from_str(KITTEN_DAY, "%Y-%m-%dT%H:%M:%S",)
             .unwrap()
             .and_utc()
             .timestamp() as u64;
@@ -24,6 +24,7 @@ pub(crate) static YEAR_CYCLE_MONTH_COUNT: u16 =
     YEAR_CYCLE as u16 * COMMON_YEAR_MONTH_COUNT as u16 + CYCLE_LEAP_YEAR_COUNT as u16; // 闰年周期的月数
 pub(crate) static MONTH_CYCLE_DAY_COUNT: u8 =
     MONTH_CYCLE * COMMON_MONTH_DAY_COUNT + CYCLE_GREATER_MONTH_COUNT; // 闰年周期的月数
+#[cfg(feature = "std")]
 pub(crate) static ARR_NUMBER_STRING: [&str; 10] =
     ["〇", "一", "二", "三", "四", "五", "六", "七", "八", "九"]; // 数字对应的字符
 
@@ -34,10 +35,12 @@ lazy_static! {
         get_month_cycle_firstday_day();
 }
 
+#[cfg(feature = "std")]
 pub(crate) static MEANING_OF_CHORD: [&str; 9] = [
     "折纸", "赤空", "玉兰", "水光", "风荧", "玄冰", "月海", "日珥", "星灯",
 ];
 
+#[cfg(feature = "std")]
 pub(crate) static MEANING_OF_MONTH: &[[&str; 4]] = &[
     ["寂月", "死亡", "祈歌", "烟花"],
     ["雪月", "风雪", "飘荡", "山茶"],

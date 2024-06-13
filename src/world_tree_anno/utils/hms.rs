@@ -1,14 +1,15 @@
-#[cfg(target_family = "wasm")]
+#[cfg(feature = "wasmbind")]
 use wasm_bindgen::prelude::*;
 
 use crate::*;
 
-#[cfg_attr(target_family = "wasm", wasm_bindgen(getter_with_clone))]
+#[cfg_attr(feature = "wasmbind", wasm_bindgen(getter_with_clone))]
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Hms {
     pub hour: u8,
     pub minute: u8,
     pub second: u8,
+    #[cfg(feature = "std")]
     pub str: String,
 }
 
@@ -22,6 +23,7 @@ impl Hms {
             hour,
             minute,
             second,
+            #[cfg(feature = "std")]
             str: hms_str(hour, minute, second),
         }
     }

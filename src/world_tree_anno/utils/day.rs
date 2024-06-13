@@ -1,11 +1,12 @@
-#[cfg(target_family = "wasm")]
+#[cfg(feature = "wasmbind")]
 use wasm_bindgen::prelude::*;
 
 use crate::*;
-#[cfg_attr(target_family = "wasm", wasm_bindgen(getter_with_clone))]
+#[cfg_attr(feature = "wasmbind", wasm_bindgen(getter_with_clone))]
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Day {
     pub number: u8,
+    #[cfg(feature = "std")]
     pub str: String,
 }
 
@@ -14,6 +15,7 @@ impl FromNumber for Day {
     fn from_number(number: u8) -> Self {
         Self {
             number,
+            #[cfg(feature = "std")]
             str: day_str(number),
         }
     }

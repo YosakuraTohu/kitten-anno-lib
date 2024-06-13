@@ -1,12 +1,13 @@
-#[cfg(target_family = "wasm")]
+#[cfg(feature = "wasmbind")]
 use wasm_bindgen::prelude::*;
 
 use crate::*;
 
-#[cfg_attr(target_family = "wasm", wasm_bindgen(getter_with_clone))]
+#[cfg_attr(feature = "wasmbind", wasm_bindgen(getter_with_clone))]
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Year {
     pub number: u64,
+    #[cfg(feature = "std")]
     pub str: String,
 }
 
@@ -25,6 +26,7 @@ impl FromYearNumber for Year {
     fn from_number(number: u64) -> Self {
         Self {
             number,
+            #[cfg(feature = "std")]
             str: year_str(number),
         }
     }
