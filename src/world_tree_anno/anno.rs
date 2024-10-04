@@ -81,8 +81,9 @@ impl Anno {
         raw_minute: u64,
         raw_second: u64,
     ) -> Self {
+        let is_commom = Year::is_common(raw_year - 1);
         let raw_month = Year::reverse(raw_year) + raw_month;
-        let raw_day = Month::reverse(raw_month - 1) + raw_day;
+        let raw_day = Month::reverse(raw_month - if is_commom { 1 } else { 0 }) + raw_day;
         let timestamp = Day::reverse(raw_day - 1) + raw_hour * 3600 + raw_minute * 60 + raw_second;
 
         Self::from_timestamp(timestamp)
